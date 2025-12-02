@@ -1,0 +1,37 @@
+name: Build Chrome Extension
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install zip utility
+      run: sudo apt-get update && sudo apt-get install -y zip
+
+    - name: Build extension
+      run: npm run build
+
+    - name: Zip extension
+      run: npm run zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: extension-zip
+        path: extension.zip
